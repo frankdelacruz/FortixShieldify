@@ -22,13 +22,21 @@ class ShieldifyServiceProvider extends ServiceProvider
     
         // Conditionally load routes and publish resources based on context
         if ($context === 'api' || $context === 'both') {
-            // Load API routes if they are separate
+            // Load API routes
             $this->loadRoutesFrom(__DIR__.'/routes/api.php');
-        }
     
+            // Example: Publish API-specific configuration
+            $this->publishes([
+                __DIR__.'/config/api.php' => config_path('shieldify_api.php'),
+            ], 'shieldify-api');
+    
+            // If you have API-specific views or assets, publish them here using the 'shieldify-api' tag
+        }
+        
         if ($context === 'web' || $context === 'both') {
             // Load web routes
             $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+            
             // Publish views and assets for web context
             $this->publishes([
                 __DIR__.'/resources/views' => resource_path('views/vendor/shieldify'),
@@ -39,7 +47,7 @@ class ShieldifyServiceProvider extends ServiceProvider
             ], 'shieldify-assets');
         }
     
-        // Configuration and middleware are likely common to both, so always register
+        // Always register configuration and middleware
         $this->publishes([
             __DIR__.'/config/shieldify.php' => config_path('shieldify.php'),
         ], 'shieldify-config');
@@ -49,5 +57,6 @@ class ShieldifyServiceProvider extends ServiceProvider
         $router->aliasMiddleware('shieldify.role', \Fortix\Shieldify\Middleware\CheckRole::class);
         $router->aliasMiddleware('shieldify.permission', \Fortix\Shieldify\Middleware\CheckPermission::class);
     }
+    
     
 }
