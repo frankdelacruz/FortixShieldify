@@ -15,34 +15,38 @@ class ShieldifyServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        // Load migrations from the database/migrations directory
+        // Assuming the database, routes, views, and assets are correctly located relative to the ServiceProvider
+
+        // Load migrations
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
-        // Load routes from the routes/web.php file
+        // Load routes
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
 
-        // Load views from the resources/views directory and set the namespace
+        // Load views
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'shieldify');
 
-        // Publish views to the application's resources/views/vendor/shieldify directory
+        // Publish views
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/shieldify'),
         ], 'shieldify-views');
 
-        // Publish assets to the application's public/vendor/shieldify directory
+        // Publish assets
         $this->publishes([
             __DIR__.'/../resources/assets' => public_path('vendor/shieldify'),
         ], 'shieldify-assets');
 
-        // Publish the configuration file to the application's config directory
-        // Note: Adjusted the path to reflect the config directory's location inside src
+        // Publish the configuration file
         $this->publishes([
+            // If your config is truly inside the src, this path needs to reflect that
             __DIR__.'/config/shieldify.php' => config_path('shieldify.php'),
         ], 'shieldify-config');
 
         // Merge the package configuration file with the application's configuration
-        // Note: realpath() is removed to avoid the error when the path does not resolve to a valid directory
-        $this->mergeConfigFrom(__DIR__.'/config/shieldify.php', 'shieldify');
+        $this->mergeConfigFrom(
+            // The path here assumes config is directly under src, as you indicated
+            __DIR__.'/config/shieldify.php', 'shieldify'
+        );
 
         // Register middleware aliases
         $router = $this->app['router'];
