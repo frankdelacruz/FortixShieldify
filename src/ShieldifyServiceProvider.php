@@ -41,7 +41,7 @@ class ShieldifyServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/shieldify.php' => config_path('shieldify.php'),
         ], 'shieldify-config');
-        $this->mergeConfigFrom(__DIR__.'/../config/shieldify.php', 'shieldify');
+        $this->mergeConfigFrom(realpath(__DIR__.'/../config/shieldify.php'), 'shieldify');
 
         // Register middleware aliases
         $router = $this->app['router'];
