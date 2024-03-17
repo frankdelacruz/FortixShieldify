@@ -12,7 +12,7 @@ use Fortix\Shieldify\Http\Resources\PermissionCollection;
 use Fortix\Shieldify\Http\Resources\ModuleResource;
 use App\Http\Controllers\Controller;
 
-class PermissionsController extends Controller
+class PermissionsApiController extends Controller
 {
     public function index()
     {
