@@ -4,7 +4,6 @@ namespace Fortix\Shieldify;
 
 use Illuminate\Support\ServiceProvider;
 
-
 class ShieldifyServiceProvider extends ServiceProvider
 {
     public function register()
@@ -12,42 +11,30 @@ class ShieldifyServiceProvider extends ServiceProvider
         $this->app->singleton('shieldify', function ($app) {
             return new \Fortix\Shieldify\Services\ShieldifyService();
         });
-
-
     }
-
-
 
     public function boot()
     {
-        // Load routes, views, migrations, etc.
-
-
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-
-        $this->loadRoutesFrom(base_path('packages/Fortix/Shieldify/src/routes/web.php'));
-
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php'); // Updated
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'shieldify');
 
         $this->publishes([
-            __DIR__.'/resources/views' => resource_path('views/vendor/shieldify'),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/shieldify'),
         ], 'shieldify-views');
 
         $this->publishes([
-            __DIR__.'/resources/assets' => public_path('vendor/shieldify'),
+            __DIR__.'/../resources/assets' => public_path('vendor/shieldify'),
         ], 'shieldify-assets');
 
         $this->publishes([
-            __DIR__.'/config/shieldify.php' => config_path('shieldify.php'),
+            __DIR__.'/../config/shieldify.php' => config_path('shieldify.php'),
         ], 'shieldify-config');
 
-        $this->mergeConfigFrom(
-            __DIR__.'/config/shieldify.php', 'shieldify'
-        );
+        $this->mergeConfigFrom(__DIR__.'/../config/shieldify.php', 'shieldify');
 
         $router = $this->app['router'];
         $router->aliasMiddleware('shieldify.role', \Fortix\Shieldify\Middleware\CheckRole::class);
         $router->aliasMiddleware('shieldify.permission', \Fortix\Shieldify\Middleware\CheckPermission::class);
-
     }
 }
