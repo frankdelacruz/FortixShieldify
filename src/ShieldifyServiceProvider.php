@@ -15,38 +15,32 @@ class ShieldifyServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        // Assuming the database, routes, views, and assets are correctly located relative to the ServiceProvider
+        // Correcting the path for loading migrations from src/database/migrations
+        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
-        // Load migrations
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-
-        // Load routes
+        // Load routes from src/routes/web.php
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
 
-        // Load views
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'shieldify');
+        // Correcting the paths for loading views from src/resources/views
+        $this->loadViewsFrom(__DIR__.'/resources/views', 'shieldify');
 
-        // Publish views
+        // Correcting the paths for publishing views to the application's resources/views/vendor/shieldify directory
         $this->publishes([
-            __DIR__.'/../resources/views' => resource_path('views/vendor/shieldify'),
+            __DIR__.'/resources/views' => resource_path('views/vendor/shieldify'),
         ], 'shieldify-views');
 
-        // Publish assets
+        // Correcting the paths for publishing assets to the application's public/vendor/shieldify directory
         $this->publishes([
-            __DIR__.'/../resources/assets' => public_path('vendor/shieldify'),
+            __DIR__.'/resources/assets' => public_path('vendor/shieldify'),
         ], 'shieldify-assets');
 
-        // Publish the configuration file
+        // Publishing the configuration file from src/config/shieldify.php to the application's config directory
         $this->publishes([
-            // If your config is truly inside the src, this path needs to reflect that
             __DIR__.'/config/shieldify.php' => config_path('shieldify.php'),
         ], 'shieldify-config');
 
-        // Merge the package configuration file with the application's configuration
-        $this->mergeConfigFrom(
-            // The path here assumes config is directly under src, as you indicated
-            __DIR__.'/config/shieldify.php', 'shieldify'
-        );
+        // Merging the package configuration file with the application's configuration
+        $this->mergeConfigFrom(__DIR__.'/config/shieldify.php', 'shieldify');
 
         // Register middleware aliases
         $router = $this->app['router'];
