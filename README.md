@@ -10,6 +10,7 @@ Shieldify is a comprehensive Laravel package designed to simplify role, permissi
 - [Basic Usage](#basic-usage)
   - [Defining Roles, Permissions, and Modules](#defining-roles-permissions-and-modules)
   - [Assigning Roles to Users](#assigning-roles-to-users)
+  - [Grant, Revoke Permissions](#grant-revoke-permissions)
   - [Checking Permissions](#checking-permissions)
 - [Middleware](#middleware)
 - [Advanced Usage](#advanced-usage)
@@ -35,14 +36,28 @@ If Laravel's package auto-discovery does not automatically register the Shieldif
     ],
     
 
+- Open the config/app.php
+- Look for the aliases array
+- Add a new entry for your Shieldify facade like so
+
+
+    'aliases' => [
+        ...
+        'Shieldify' => \Fortix\Shieldify\Facades\ShieldifyFacade::class,
+    ],
+
+
 ### After installation, you may publish the package's assets with:
 
     php artisan vendor:publish --provider="Fortix\Shieldify\ShieldifyServiceProvider"
 
+## For API
+
+    php artisan vendor:publish --provider="Fortix\Shieldify\ShieldifyServiceProvider" --tag="shieldify-api-config"
 
 This command publishes the configuration, migrations, and any other assets necessary for Shieldify to function. Run the migrations to set up the required database tables:
 
-php artisan migrate
+    php artisan migrate
 
 
 
@@ -83,9 +98,33 @@ The `shieldify.php` configuration file will be located in your config directory 
     
     // Create a module
     $module = Module::create(['name' => 'Articles']);
+
+You can use `Shieldify facade` for this:
+
+    use Shieldify;
     
-    // Assign permissions to the role for the module
-    Shieldify::role('Editor')->module('Articles')->grantPermission(['edit', 'delete']);
+    // To create a role named 'Employee'
+    Shieldify::createRole('Employee');
+    
+    // To update a role named 'Employee' to 'Super Employee'
+    Shieldify::updateRole('Employee', 'Super Employee');
+    
+    // To assign the role 'Employee' to a user with a specific ID
+    Shieldify::assignRoleToUser($userId, 'Employee');
+    
+    // To create a module named 'Posts'
+    Shieldify::createModule('Posts');
+    
+    // To delete a role named 'Employee'
+    Shieldify::deleteRole('Employee');
+    
+    // To delete a module named 'Posts'
+    Shieldify::deleteModule('Posts');
+
+    //To Get all roles and modules
+    Shieldify::getAllRoles();
+    Shieldify::getAllModules();
+
 
 
 ##### Assigning Roles to Users
@@ -95,7 +134,27 @@ The `shieldify.php` configuration file will be located in your config directory 
     $user = User::find(1); // Assuming an existing user
     Shieldify::assignRoleToUser($user->id, 'Editor');
 
-
+## Grant and Revoke Permissions
+    
+    use Shieldify;
+    
+    // To grant permissions
+    $granted = Shieldify::grantPermissionsToRole('Editor', 'Posts', ['create', 'edit']);
+    if ($granted) {
+        echo "Permissions granted successfully.";
+    } else {
+        echo "Failed to grant permissions.";
+    }
+    
+    // To revoke permissions
+    $revoked = Shieldify::revokePermissionsFromRole('Editor', 'Posts', ['delete']);
+    if ($revoked) {
+        echo "Permissions revoked successfully.";
+    } else {
+        echo "Failed to revoke permissions.";
+    }
+    
+    
 ##  Checking Permissions
 ##### Perform permission checks to control access to application features.
 
@@ -128,7 +187,7 @@ Shieldify provides middleware for route protection based on roles and permission
 
 
 ## Advanced Usage
-Refer to the full documentation for advanced features and customization options, including dynamic permission checks, role hierarchies, and more.
+Full Documentation will be soon Available
 
 
 ## Support

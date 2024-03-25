@@ -209,6 +209,51 @@ class ShieldifyService
 
 
 
+
+        //Roles
+
+        public function createRole($name)
+        {
+            if (Role::where('name', $name)->exists()) {
+                throw new \Exception("Role '{$name}' already exists.");
+            }
+            return Role::create(['name' => $name]);
+        }
+    
+        public function updateRole($oldName, $newName)
+        {
+            $role = Role::where('name', $oldName)->firstOrFail();
+            if (Role::where('name', $newName)->exists()) {
+                throw new \Exception("Role '{$newName}' already exists.");
+            }
+            $role->name = $newName;
+            $role->save();
+            return $role;
+        }
+
+
+        public function deleteRole($name)
+        {
+            $role = Role::where('name', $name)->first();
+            if (!$role) {
+                throw new \Exception("Role '{$name}' does not exist.");
+            }
+            
+            // Detach the role from all users
+            $role->users()->detach();
+            
+            // Now delete the role
+            $role->delete();
+            return $this;
+        }
+
+
+        public function getAllRoles()
+        {
+            return Role::all();
+        }
+
+
         public function assignRoleToUser($userIdentifier, $roleTitle)
          {
             $user = User::where('id', $userIdentifier)
@@ -290,6 +335,58 @@ class ShieldifyService
             return $permissionsList;
         }
 
+    //Modules
+    public function createModule($name)
+    {
+        if (Module::where('name', $name)->exists()) {
+            throw new \Exception("Module '{$name}' already exists.");
+        }
+        return Module::create(['name' => $name]);
+    }
 
+    public function updateModule($oldName, $newName)
+    {
+        $module = Module::where('name', $oldName)->firstOrFail();
+        if (Module::where('name', $newName)->exists()) {
+            throw new \Exception("Module '{$newName}' already exists.");
+        }
+        $module->name = $newName;
+        $module->save();
+        return $module;
+    }
+
+
+    public function deleteModule($name)
+    {
+        $module = Module::where('name', $name)->first();
+        if (!$module) {
+            throw new \Exception("Module '{$name}' does not exist.");
+        }
+        
+        // Retrieve all permissions associated with the module
+        $permissions = Permission::where('module_id', $module->id)->get();
+        foreach ($permissions as $permission) {
+            // Construct the cache key used for storing permissions of this module
+            $cacheKey = 'permissions_for_module_' . $module->id;
+
+            // Check if permissions for this module are cached, and if so, clear the cache
+            if (Cache::has($cacheKey)) {
+                Cache::forget($cacheKey);
+            }
+
+            // Delete the permission record
+            $permission->delete();
+        }
+
+        // Now delete the module itself
+        $module->delete();
+        return $this;
+    }
+
+
+    public function getAllModules()
+    {
+        return Module::all();
+    }
 
 }
