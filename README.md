@@ -41,10 +41,11 @@ If Laravel's package auto-discovery does not automatically register the Shieldif
 - Add a new entry for your Shieldify facade like so
 
 
-    'aliases' => [
-        ...
-        'Shieldify' => \Fortix\Shieldify\Facades\ShieldifyFacade::class,
-    ],
+        'aliases' => [
+            ...
+            'Shieldify' => \Fortix\Shieldify\Facades\ShieldifyFacade::class,
+        ],
+
 
 
 ### After installation, you may publish the package's assets with:
@@ -86,6 +87,23 @@ The `shieldify.php` configuration file will be located in your config directory 
 
 
 ## Basic Usage
+
+##### Setting Up Relationships
+To integrate Shieldify with your User model, use the ShieldifyUserTrait in your User model:
+
+    namespace App\Models;
+    
+    use Illuminate\Foundation\Auth\User as Authenticatable;
+    use Fortix\Shieldify\Traits\ShieldifyUserTrait;
+    
+    class User extends Authenticatable
+    {
+        use ShieldifyUserTrait;
+    
+        // Your model's content
+    }
+    
+
 
 ##### DEFINING ROLES, PERMISSIONS, AND MODULES
 ###### Create roles, permissions, and modules directly using Eloquent models or through Shieldify Facades.

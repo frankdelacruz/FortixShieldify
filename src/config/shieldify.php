@@ -11,4 +11,14 @@ return [
     'cache_duration' => env('SHIELDFY_CACHE_DURATION', 60),
 
     // Other configuration values can be added here as needed
+
+      // Configuration for Model
+
+      'models' => [
+        'role' => Fortix\Shieldify\Models\Role::class,
+        'permission' => Fortix\Shieldify\Models\Permission::class,
+        'module' =>  Fortix\Shieldify\Models\Module::class,
+    ],
+
+    
 ];

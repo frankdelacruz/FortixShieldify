@@ -53,5 +53,8 @@ class ShieldifyServiceProvider extends ServiceProvider
         $router = $this->app['router'];
         $router->aliasMiddleware('shieldify.role', \Fortix\Shieldify\Middleware\CheckRole::class);
         $router->aliasMiddleware('shieldify.permission', \Fortix\Shieldify\Middleware\CheckPermission::class);
+
+        // Automatically load the package's model and trait files
+        $this->registerModelAndTraits();
     }
 }
