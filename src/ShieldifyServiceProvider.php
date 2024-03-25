@@ -25,9 +25,9 @@ class ShieldifyServiceProvider extends ServiceProvider
             $this->loadRoutesFrom(__DIR__.'/routes/api.php');
 
             // Publish API-specific configurations
-            $this->publishes([
-                __DIR__.'/config/api.php' => config_path('shieldify_api.php'),
-            ], 'shieldify-api-config');
+            // $this->publishes([
+            //     __DIR__.'/config/api.php' => config_path('shieldify_api.php'),
+            // ], 'shieldify-api-config');
         }
         
         if ($context === 'web' || $context === 'both') {
