@@ -23,7 +23,9 @@ To install Shieldify, run the following command in your project directory:
 composer require fortix/shieldify
 
 
-Manual Service Provider Registration
+## Manual Service Provider Registration
+
+
 If Laravel's package auto-discovery does not automatically register the Shieldify service provider, manually add it to the providers array in your config/app.php file:
 
 
@@ -33,7 +35,7 @@ If Laravel's package auto-discovery does not automatically register the Shieldif
 ],
 
 
-After installation, you may publish the package's assets with:
+### After installation, you may publish the package's assets with:
 
 php artisan vendor:publish --provider="Fortix\Shieldify\ShieldifyServiceProvider"
 
@@ -44,7 +46,8 @@ php artisan migrate
 
 
 
-Configuration
+## Configuration
+
 The shieldify.php configuration file will be located in your config directory after publishing. This file allows you to customize various aspects of Shieldify, including caching behavior for permissions to enhance performance.
 
 
@@ -57,9 +60,10 @@ return [
 
 
 
-Basic Usage
-Defining Roles, Permissions, and Modules
-Create roles, permissions, and modules directly using Eloquent models or through Shieldify Facades.
+## Basic Usage
+
+### Defining Roles, Permissions, and Modules
+### Create roles, permissions, and modules directly using Eloquent models or through Shieldify Facades.
 
 
 use Fortix\Shieldify\Models\{Role, Permission, Module};
@@ -82,8 +86,8 @@ $user = User::find(1); // Assuming an existing user
 Shieldify::assignRoleToUser($user->id, 'Editor');
 
 
-Checking Permissions
-Perform permission checks to control access to application features.
+### Checking Permissions
+### Perform permission checks to control access to application features.
 
 
 if (Shieldify::module('Articles')->hasPermission('edit')) {
@@ -91,7 +95,7 @@ if (Shieldify::module('Articles')->hasPermission('edit')) {
 }
 
 
-Middleware
+## Middleware
 Shieldify provides middleware for route protection based on roles and permissions.
 
 
@@ -112,9 +116,9 @@ Route::middleware(['permission:edit Articles'])->group(function () {
 
 
 
-Advanced Usage
+## Advanced Usage
 Refer to the full documentation for advanced features and customization options, including dynamic permission checks, role hierarchies, and more.
 
 
-Support
+## Support
 For support, please open an issue in the GitHub repository.
