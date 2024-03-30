@@ -72,6 +72,19 @@ class ShieldifyService
     }
 
 
+    public function roleById($roleId, $withPermissions = false)
+    {
+        $query = Role::where('id', $roleId);
+    
+        if ($withPermissions) {
+            $query = $query->with('permissions');
+        }
+    
+        $role = $query->firstOrFail();
+        $this->roleId = $role->id;
+        return $this;
+    }
+
 
     // role method to optionally chain withPermissions method
     public function role($roleName)
@@ -104,6 +117,12 @@ class ShieldifyService
         return $this;
     }
 
+    public function moduleById($moduleId)
+    {
+        $module = Module::findOrFail($moduleId);
+        $this->moduleId = $module->id;
+        return $this;
+    }
 
     public function grantPermission($permissions)
     {
