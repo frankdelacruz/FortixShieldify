@@ -52,9 +52,7 @@ If Laravel's package auto-discovery does not automatically register the Shieldif
 
     php artisan vendor:publish --provider="Fortix\Shieldify\ShieldifyServiceProvider"
 
-## For API
 
-    php artisan vendor:publish --provider="Fortix\Shieldify\ShieldifyServiceProvider" --tag="shieldify-api-config"
 
 This command publishes the configuration, migrations, and any other assets necessary for Shieldify to function. Run the migrations to set up the required database tables:
 
@@ -202,6 +200,17 @@ Shieldify provides middleware for route protection based on roles and permission
         // Routes requiring 'edit' permission on 'Articles' module
     });
 
+## Scenario 1: Logged-in User
+
+    $roles = Shieldify::allRoles(); // Fetches all roles for the logged-in user
+    $rolesWithPermissions = Shieldify::allRolesWithPermissions(); // Fetches all roles and their permissions for the logged-in user
+
+## Scenario 2: For Specific User by ID:
+
+    $user = User::find($userId); // Assuming you have the user's ID
+    Shieldify::setUser($user); // Set the user context
+    $roles = Shieldify::allRoles(); // Fetches all roles for the specified user
+    $rolesWithPermissions = Shieldify::allRolesWithPermissions(); // Fetches all roles and their permissions for the specified user
 
 
 ## Advanced Usage

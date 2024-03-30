@@ -14,6 +14,8 @@ class ShieldifyService
     protected $roleId;
     protected $moduleId;
     protected $useCache;
+     // To determine if permissions should be loaded with the role
+     protected $loadPermissionsWithRole = false;
 
     public function __construct()
     {
@@ -44,16 +46,54 @@ class ShieldifyService
 
 
 
+    public function allRoles()
+    {
+        $user = $this->getUserInstance();
+        return $user->roles;
+    }
+
+    public function allRolesWithPermissions()
+    {
+        $user = $this->getUserInstance();
+        // Make sure you have defined the 'permissions' relationship in your Role model
+        return $user->roles()->with('permissions')->get();
+    }
+
+    protected function getUserInstance()
+    {
+        if (!$this->user && auth()->check()) {
+            // Fallback to logged-in user if no user is explicitly set
+            $this->setUser(auth()->user());
+        } elseif (!$this->user) {
+            throw new \Exception("No user context set and no authenticated user found.");
+        }
+        
+        return $this->user;
+    }
+
+
+
+    // role method to optionally chain withPermissions method
     public function role($roleName)
     {
-        if ($this->user) {
-            // If a user is set, check if the user has the role by name
-            $role = $this->user->roles()->where('name', $roleName)->firstOrFail();
-        } else {
-            // If no user is set, fetch the role by name as before
-            $role = Role::where('name', $roleName)->firstOrFail();
+        $roleQuery = Role::where('name', $roleName);
+
+        // Check if permissions should be included with the role
+        if ($this->loadPermissionsWithRole) {
+            $roleQuery = $roleQuery->with('permissions');
+            $this->loadPermissionsWithRole = false; // Reset the flag
         }
+
+        $role = $roleQuery->firstOrFail();
         $this->roleId = $role->id;
+        return $this;
+    }
+
+
+    // Method to set the flag to include permissions when loading the role
+    public function withPermissions()
+    {
+        $this->loadPermissionsWithRole = true;
         return $this;
     }
 
@@ -211,7 +251,6 @@ class ShieldifyService
 
 
         //Roles
-
         public function createRole($name)
         {
             if (Role::where('name', $name)->exists()) {
