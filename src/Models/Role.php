@@ -33,4 +33,18 @@ class Role extends Model
         // Ensure the correct namespace for the Permission model
         return $this->hasMany(Permission::class);
     }
+
+    // Boot method to handle cascade delete
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($role) {
+            // Detach all permissions
+            $role->permissions()->detach();
+
+            // Detach roles from users
+            $role->users()->detach();
+        });
+    }
 }
